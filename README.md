@@ -115,3 +115,21 @@ python3 app.py
 ```
 
 Seguimos con el `paso-04`.
+
+## `paso-04`
+
+En este paso se harán modificaciones de forma y afectarán a los archivos `static/css/main.css` y `templates/index.html`.
+También se presentan unos cambios menores en el archivo `app.py`.
+
+Se hacen los cambios en los archivo y se ejecuta nuevamente la aplicación. 
+
+```
+python3 app.py
+```
+
+La interfaz debería tener una apariencia similar a esto:
+
+![Interfaz 01](images/interface-01.png)
+
+**IMPORTANTE** al momento no hay nada funcional solo hay decoración. 
+En los próximos pasos se llevará a cabo la adición de la funcionalidad de la aplicación.
