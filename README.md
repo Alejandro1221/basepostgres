@@ -63,3 +63,20 @@ Press CTRL+C to quit
 ```
 
 Abrir ahora un navegador en la dirección `http://localhost:5000`.
+
+Continuar con el `paso-02`.
+
+## `paso-02`
+
+En este paso vamos a usar hojas de estilo y `templates` con Flask. 
+En la versión del archivo `app.py` anterior lo que se arrojaba o devolvía el método `index()` era una cadena de caracteres. 
+En esta versión lo que devolverá esta función es un archivo `.html` que se encuentra en la carpeta `templates` y que está formateado con hoja de estilo CSS.
+
+En esta nueva versión de nuestro programa ocurren los siguientes cambios:
+
+* Se crean los directorios `templates` y `static/css`. Dentro de estos directorios se ubican los archivos `index.html` y `base.html` en el directorio `templates` y `main.css` en el directorio `static/css`.
+
+![Arbol de directorios](images/tree.png)
+
+* Se modifica el archivo `app.py` de modo que ahora se renderice una página HTML y se incluyen algunos módulos en el script que permiten que esta página sea renderizada adecuadamente.
+
