@@ -141,3 +141,13 @@ Se hará la modificación del archivo `app.py`, en particular, al método `index
 
 Una vez hechas las modificaciones ya será posible adicionar tareas a la aplicación.
 
+## `paso-06`
+
+En este paso se habilitará la posibilidad de borrar tareas y actualizarlas. 
+Para ello se modifican:
+
+* Archivo `app.py` y donde se definirán funciones en Python para borrar y actualizar tareas. 
+
+* Archivo `templates/index.html` de modo que se habiliten enlaces en la tabla donde se presentan las tareas para que se puedan invocar los métodos de borrado y actualización de tareas.
+
+Se crea adicionalmente un archivo llamado `templates/update.html` y el cual contendrá una interfaz que permita al usuario cambiar la descripción de la tarea.
