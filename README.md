@@ -29,7 +29,7 @@ flask-sqlalchemy
 A continuación veremos el código tipo `hola mundo` en Flask.
 Se creará un archivo llamado `app.py` que contiene las siguientes líneas:
 
-```
+```python
 from flask import Flask
 
 app = Flask(__name__)
@@ -80,3 +80,36 @@ En esta nueva versión de nuestro programa ocurren los siguientes cambios:
 
 * Se modifica el archivo `app.py` de modo que ahora se renderice una página HTML y se incluyen algunos módulos en el script que permiten que esta página sea renderizada adecuadamente.
 
+## `paso-03` 
+
+En este paso nos encargamos de hacer los cambios pertinentes en la aplicación para que los datos que gestiona esta aplicación queden almacenados correctamente en una base de datos relacional, en este caso SQLite. 
+Inicialmente, se modifica el archivo `app.py`.
+
+* Se indica la cadena de conexión a la base de datos a través de la inicialización de la variable `app.config['SQLALCHEMY_DATABASE_URI']`.
+* Se define una clase la cual será la encargada de representar los datos básicos que gestiona nuestra aplicación. La clase es `Todo`.
+
+Una vez se hace el cambio del archivo se crea un archivo en Python llamado `create_db.py`. 
+Este archivo contiene la siguiente información:
+
+```python
+#!/usr/bin/env python3
+from app import app,db
+app.app_context().push()
+db.create_all()
+```
+
+Una vez se tiene este archivo se ejecuta:
+
+```
+python3 create_db.py
+```
+
+La ejecución de este archivo crea un directorio llamado `instance`.
+
+![Directorio instance](images/instance.png)
+
+Se lanza nuevamente la ejecución de nuestra aplicación:
+
+```
+python3 app.py
+```
