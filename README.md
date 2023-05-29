@@ -133,3 +133,11 @@ La interfaz debería tener una apariencia similar a esto:
 
 **IMPORTANTE** al momento no hay nada funcional solo hay decoración. 
 En los próximos pasos se llevará a cabo la adición de la funcionalidad de la aplicación.
+
+## `paso-05` 
+
+En este paso se harán las modificaciones que permitirán crear nuevas tareas.
+Se hará la modificación del archivo `app.py`, en particular, al método `index()` y al decorador de este método, `@app.route...`.
+
+Una vez hechas las modificaciones ya será posible adicionar tareas a la aplicación.
+
