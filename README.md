@@ -151,3 +151,56 @@ Para ello se modifican:
 * Archivo `templates/index.html` de modo que se habiliten enlaces en la tabla donde se presentan las tareas para que se puedan invocar los métodos de borrado y actualización de tareas.
 
 Se crea adicionalmente un archivo llamado `templates/update.html` y el cual contendrá una interfaz que permita al usuario cambiar la descripción de la tarea.
+
+## paso-08
+
+En este paso se han adicionado un par de __end points__ que permiten el acceso programático a la gestión de tareas en nuestra aplicación.
+
+En el archivo `app.py` se adicionaron los métodos en Python:
+
+* Para __borrar__ y __actualizar__ tareas en la aplicación
+
+```
+@app.route('/todo/<int:id>', methods=['DELETE','PUT'])
+def todo_del_put(id): 
+```
+
+* Para __listar__ y __crear__ tareas en la aplicación:
+
+```
+@app.route('/todo', methods=['GET','POST'])
+def todo_get_post(): 
+```
+
+Desde la línea de comandos para:
+
+* Crear una tarea se puede ejecutar el siguiente comando:
+
+```
+curl -X POST -d '{"content": "leer libro"}' -H 'Content-type: application/json' http://localhost:5000/todo
+```
+
+* Borrar una tarea se puede ejecutar el siguiente comando:
+
+```
+curl -X DELETE http://localhost:5000/todo/3
+```
+ 
+* Actualizar una tarea se puede ejecutar el siguiente comando:
+
+```
+curl -X PUT -d '{"content": "leer libro"}' -H 'Content-type: application/json' http://localhost:5000/todo/2
+```
+
+__IMPORTANTE__ Tener presente que debe existir la tarea número __2__ para que funcione el comando anterior.
+
+* Listar tareas se puede ejecutar el siguiente comando:
+
+```
+curl http://localhost:5000
+```
+
+__OJO__ hay un pequeño error pues está arrojando el resultado en la plantilla `templates/index.html`.
+
+En el archivo `requests_example.py` encontrará un ejemplo en Python de como 
+llevar a cabo la interacción a los __*end points*__ recien creados desde Python.

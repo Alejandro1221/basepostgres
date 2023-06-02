@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, jsonify, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -24,6 +24,13 @@ class Todo(db.Model):
 	#
 	def __repr__(self):
     	      return '<Task %r>' % self.id
+
+def convert_todo_to_dict(todo):
+    todo_dict = {}
+    for attr in vars(todo):
+        attr_value = getattr(todo,attr)
+        todo_dict[attr] = attr_value
+    return todo_dict
 
 @app.route('/', methods=['POST','GET'])
 def index():
@@ -67,6 +74,44 @@ def update(id):
         	    return 'There was an issue updating your task'
 	else:
     	    return render_template('update.html', task=task)
+
+@app.route('/todo/<int:id>', methods=['DELETE','PUT'])
+def todo_del_put(id): 
+    task = Todo.query.get_or_404(id) 
+    if request.method == 'DELETE': 
+        try: 
+            db.session.delete(task)
+            db.session.commit()
+            return jsonify({'Result': 'Ok'})
+        except: 
+            return f'There was an issue deleting a task whose id is {id}'
+    else:
+        if request.json and 'content' in request.json:
+            task.content = request.json.get('content',"")
+            try:
+                db.session.commit() 
+                return jsonify({'Result': 'Ok'})
+            except: 
+                return f'There was an issue updating a task whose id is {id}'
+
+@app.route('/todo', methods=['GET','POST'])
+def todo_get_post(): 
+    if request.method == 'GET': 
+        tasks = Todo.query.order_by(Todo.date_created).all() 
+        todos = []
+        for todo in tasks:
+            todos += convert_to_dict(todo)
+        return jsonify({'tasks': todos})
+    else:
+        if request.json and 'content' in request.json:
+            content = request.json.get('content',"") 
+            new_task = Todo(content = content) 
+            try: 
+                db.session.add(new_task) 
+                db.session.commit() 
+                return jsonify({'Result': 'Ok'}) 
+            except: 
+                return f'There was an issue creating a task with content \'{content}\'' 
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0',debug=True)
