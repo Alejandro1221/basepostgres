@@ -28,8 +28,9 @@ class Todo(db.Model):
 def convert_todo_to_dict(todo):
     todo_dict = {}
     for attr in vars(todo):
-        attr_value = getattr(todo,attr)
-        todo_dict[attr] = attr_value
+        if attr not in ['_sa_instance_state']: 
+            attr_value = getattr(todo,attr) 
+            todo_dict[attr] = attr_value
     return todo_dict
 
 @app.route('/', methods=['POST','GET'])
@@ -100,12 +101,12 @@ def todo_get_post():
         tasks = Todo.query.order_by(Todo.date_created).all() 
         todos = []
         for todo in tasks:
-            todos += convert_to_dict(todo)
+            todos.append(convert_todo_to_dict(todo))
         return jsonify({'tasks': todos})
     else:
         if request.json and 'content' in request.json:
-            content = request.json.get('content',"") 
-            new_task = Todo(content = content) 
+            content = request.json 
+            new_task = Todo(**content) 
             try: 
                 db.session.add(new_task) 
                 db.session.commit() 
