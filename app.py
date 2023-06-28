@@ -1,14 +1,16 @@
 from flask import Flask, jsonify, render_template, url_for, request, redirect
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
-#
-# Parametros de configuracion a la base de datos
-#
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+
+# Configuración de la base de datos
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:314162846@localhost:5432/testdb'
+
+# Inicialización de las extensiones Flask-SQLAlchemy y Flask-Migrate
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 #
 # A continuacion se crea un modelo o esquema para la base de datos
@@ -24,14 +26,6 @@ class Todo(db.Model):
 	#
 	def __repr__(self):
     	      return '<Task %r>' % self.id
-
-def convert_todo_to_dict(todo):
-    todo_dict = {}
-    for attr in vars(todo):
-        if attr not in ['_sa_instance_state']: 
-            attr_value = getattr(todo,attr) 
-            todo_dict[attr] = attr_value
-    return todo_dict
 
 @app.route('/', methods=['POST','GET'])
 def index():
@@ -50,69 +44,30 @@ def index():
     else: 
         tasks = Todo.query.order_by(Todo.date_created).all() 
         return render_template('index.html', tasks=tasks)
-
 @app.route('/delete/<int:id>')
 def delete(id):
-	task_to_delete = Todo.query.get_or_404(id)
+    task_to_delete = Todo.query.get_or_404(id)
 
-	try:
-    	  db.session.delete(task_to_delete)
-    	  db.session.commit()
-    	  return redirect('/')
-	except:
-    	  return "There was a problem deleting that task"
+    try:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        return redirect('/')
+    except:
+        return "There was a problem deleting that task"
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
-	task = Todo.query.get_or_404(id)
+    task = Todo.query.get_or_404(id)
 
-	if request.method == 'POST':
-    	  task.content = request.form['content']
-    	  try:
-        	    db.session.commit()
-        	    return redirect('/')
-    	  except:
-        	    return 'There was an issue updating your task'
-	else:
-    	    return render_template('update.html', task=task)
-
-@app.route('/todo/<int:id>', methods=['DELETE','PUT'])
-def todo_del_put(id): 
-    task = Todo.query.get_or_404(id) 
-    if request.method == 'DELETE': 
-        try: 
-            db.session.delete(task)
+    if request.method == 'POST':
+        task.content = request.form['content']
+        try:
             db.session.commit()
-            return jsonify({'Result': 'Ok'})
-        except: 
-            return f'There was an issue deleting a task whose id is {id}'
+            return redirect('/')
+        except:
+            return 'There was an issue updating your task'
     else:
-        if request.json and 'content' in request.json:
-            task.content = request.json.get('content',"")
-            try:
-                db.session.commit() 
-                return jsonify({'Result': 'Ok'})
-            except: 
-                return f'There was an issue updating a task whose id is {id}'
-
-@app.route('/todo', methods=['GET','POST'])
-def todo_get_post(): 
-    if request.method == 'GET': 
-        tasks = Todo.query.order_by(Todo.date_created).all() 
-        todos = []
-        for todo in tasks:
-            todos.append(convert_todo_to_dict(todo))
-        return jsonify({'tasks': todos})
-    else:
-        if request.json and 'content' in request.json:
-            content = request.json 
-            new_task = Todo(**content) 
-            try: 
-                db.session.add(new_task) 
-                db.session.commit() 
-                return jsonify({'Result': 'Ok'}) 
-            except: 
-                return f'There was an issue creating a task with content \'{content}\'' 
+        return render_template('update.html', task=task)
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0',debug=True)

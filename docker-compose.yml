@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: taskmaster
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: '314162846'
+      POSTGRES_DB: testdb
+    ports:
+      - '5432:5432'
+    networks:
+      - union
+    container_name: 'db'
+
+  flask:
+    build:
+      context: ./
+    ports: 
+      - '5000:5000'
+    networks: 
+      - union
+    container_name: 'flask'
+    depends_on:
+      - db
+
+networks: 
+  union:
+      driver: bridge
